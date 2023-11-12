@@ -1,5 +1,5 @@
-import type {ReflectServerOptions} from '@rocicorp/reflect/server';
-import {M, mutators} from './mutators.js';
+import type { ReflectServerOptions } from "@rocicorp/reflect/server";
+import { M, mutators } from "./mutators.js";
 
 // worker fails to deploy if this is imported
 // import { InstancePresenceRecordType } from '@tldraw/tldraw';
@@ -7,11 +7,11 @@ import {M, mutators} from './mutators.js';
 function makeOptions(): ReflectServerOptions<M> {
   return {
     mutators,
-    logLevel: 'error',
-    disconnectHandler: async (tx) => {
-      await tx.del(`instance_presence:${tx.clientID}`)
-    }
+    logLevel: "error",
+    disconnectHandler: async tx => {
+      await tx.del(`instance_presence:${tx.clientID}`);
+    },
   };
 }
 
-export {makeOptions as default};
+export { makeOptions as default };
