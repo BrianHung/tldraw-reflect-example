@@ -9,44 +9,6 @@ export async function deleteRecord(tx: WriteTransaction, id: string) {
   return tx.del(id);
 }
 
-export async function moveShape(
-  tx: WriteTransaction,
-  { id, dx, dy }: { id: string; dx: number; dy: number }
-): Promise<void> {
-  const shape = await tx.get(id);
-  if (!shape) return;
-  return tx.set(id, {
-    ...shape,
-    x: shape.x + dx,
-    y: shape.y + dy,
-  });
-}
-
-export async function resizeShape(
-  tx: WriteTransaction,
-  { id, dw, dh }: { id: string; dw: number; dh: number }
-): Promise<void> {
-  const shape = (await tx.get(id)) as any;
-  if (!shape) return;
-  return tx.set(id, {
-    ...shape,
-    props: {
-      ...shape.props,
-      w: Math.max(Number.MIN_VALUE, shape.props.w + dw),
-      h: Math.max(Number.MIN_VALUE, shape.props.h + dh),
-    },
-  });
-}
-
-export async function rotateShape(tx: WriteTransaction, { id, dr }: { id: string; dr: number }): Promise<void> {
-  const shape = (await tx.get(id)) as any;
-  if (!shape) return;
-  return tx.set(id, {
-    ...shape,
-    rotation: shape.rotation + dr,
-  });
-}
-
 function excludeProps<T extends object, K extends keyof T | string>(obj: T, keysToExclude: K[]): Omit<T, K> {
   const newObj: Partial<T> = { ...obj };
   // Iterate over all keys to exclude and delete them from the new object
@@ -153,12 +115,7 @@ export async function updateFromStore(
 export const mutators = {
   createRecord,
   deleteRecord,
-
   updateFromStore,
-
-  moveShape,
-  resizeShape,
-  rotateShape,
   updateShape,
 };
 
