@@ -1,5 +1,5 @@
 import type { ReflectServerOptions } from "@rocicorp/reflect/server";
-import { M, mutators } from "./mutators.js";
+import { M, mutators } from "../src/mutators.js";
 
 // worker fails to deploy if this is imported
 // import { InstancePresenceRecordType } from '@tldraw/tldraw';
