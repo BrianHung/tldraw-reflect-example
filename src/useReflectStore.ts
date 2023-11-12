@@ -2,7 +2,6 @@ import {
   InstancePresenceRecordType,
   TLAnyShapeUtilConstructor,
   TLRecord,
-  TLStore,
   TLStoreEventInfo,
   TLStoreWithStatus,
   computed,
@@ -19,7 +18,8 @@ import { useEffect, useMemo, useState } from "react";
 import { ReadTransaction } from "@rocicorp/reflect";
 import { Reflect } from "@rocicorp/reflect/client";
 import groupBy from "lodash/groupBy";
-import { mutators, M } from "./mutators";
+import { mutators, M, BatchUpdate } from "./mutators";
+import jsonpatch, {Operation} from "fast-json-patch";
 
 export function useReflectStore({
   userId,
@@ -113,8 +113,18 @@ export function useReflectStore({
       disposables.add(
         store.listen(
           function applyChangesToReflect({ changes }: TLStoreEventInfo) {
+            const updatedPatches: Record<string, Operation[]> = {};
+            for (const id in changes.updated)  {
+              const [from, to] = changes.updated[id as TLRecord["id"]];
+              updatedPatches[id] = jsonpatch.compare(from, to);
+            }
+            const batchUpdate: BatchUpdate = {
+              added: changes.added,
+              removed: Object.keys(changes.removed),
+              updated: updatedPatches,
+            };
             // Sync document changes to reflect using one transaction / mutation.
-            reflect.mutate.updateFromStore(changes);
+            reflect.mutate.updateRecords(batchUpdate);
           },
           {
             source: "user",
