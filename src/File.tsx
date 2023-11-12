@@ -11,18 +11,17 @@ import { useParams } from "react-router-dom";
 import { useReflectStore } from "./useReflectStore";
 import { getUUIDFromShortId } from "./uuid";
 import { UrlState } from "./UrlState";
-import { initFromURLState } from "./useUrlState";
 const { VITE_REFLECT_SERVER: server = "http://localhost:8080" } = import.meta.env;
 
 function File() {
   const params = useParams();
 
   // Retrieve userInfo from localStorage. Replace with auth API in production.
-  const [{ userId, name }] = useLocalStorageState("user", JSON.parse(localStorage.getItem("user")));
+  const [{ userId, name }] = useLocalStorageState("user", JSON.parse(localStorage.getItem("user")!));
 
   const store = useReflectStore({
-    userId,
-    roomId: getUUIDFromShortId(params.fileId),
+    userId: userId as string,
+    roomId: getUUIDFromShortId(params.fileId!),
     server,
   });
 

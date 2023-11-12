@@ -1,6 +1,5 @@
 import {
   InstancePresenceRecordType,
-  TLAnyShapeUtilConstructor,
   TLRecord,
   TLStoreEventInfo,
   TLStoreWithStatus,
@@ -28,7 +27,6 @@ export function useReflectStore({
 }: {
   userId: string;
   roomId: string;
-  shapeUtils: TLAnyShapeUtilConstructor[];
   server: string;
 }) {
   const [storeWithStatus, setStoreWithStatus] = useState<TLStoreWithStatus>({
@@ -60,6 +58,7 @@ export function useReflectStore({
 
   useEffect(
     function createReflectStore() {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).reflect = reflect;
       setStoreWithStatus({ status: "loading" });
 
@@ -96,13 +95,14 @@ export function useReflectStore({
           diffs = diffs.filter(diff => diff.key !== presenceId);
           const { add = [], change = [], del = [] } = groupBy(diffs, diff => diff.op);
 
-          const valuesToPut = add.concat(change).map(diff => diff.newValue);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const valuesToPut = add.concat(change).map(diff => (diff as any).newValue);
           const keysToRemove = del.map(diff => diff.key);
 
           try {
             store.mergeRemoteChanges(() => {
               store.put(valuesToPut);
-              store.remove(keysToRemove);
+              store.remove(keysToRemove as TLRecord["id"][]);
             });
           } catch (error) {
             setStoreWithStatus({ status: "error", error: error as Error });
