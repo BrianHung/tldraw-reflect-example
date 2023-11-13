@@ -1,5 +1,5 @@
-import random from "lodash/random"
-import { v4 as uuid } from "uuid"
+import random from "lodash/random";
+import { v4 as uuid } from "uuid";
 
 const avatars = [
   ["🐶", "Puppy"],

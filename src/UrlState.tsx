@@ -1,16 +1,16 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useUrlState } from './useUrlState';
+import { useLocation, useNavigate } from "react-router-dom";
+import { useUrlState } from "./useUrlState";
 
 export function UrlState() {
   const navigate = useNavigate();
   const location = useLocation();
-  useUrlState(params => 
+  useUrlState(params =>
     navigate({
       pathname: location.pathname,
-      search: decodeURIComponent(new URLSearchParams(params).toString())
+      search: decodeURIComponent(new URLSearchParams(params).toString()),
     })
-  )
-  return <></>
+  );
+  return <></>;
 }
 
-export default UrlState
+export default UrlState;

@@ -10,6 +10,7 @@ npx reflect dev // in separate terminal
 ```
 
 ## Publish
+
 ```
 npx reflect publish // modify .env VITE_REFLECT_SERVER
 ```
