@@ -10,7 +10,7 @@ export function UrlState() {
       search: decodeURIComponent(new URLSearchParams(params).toString()),
     })
   );
-  return <></>;
+  return null;
 }
 
 export default UrlState;

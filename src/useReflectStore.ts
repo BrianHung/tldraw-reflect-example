@@ -18,17 +18,9 @@ import { ReadTransaction } from "@rocicorp/reflect";
 import { Reflect } from "@rocicorp/reflect/client";
 import groupBy from "lodash/groupBy";
 import { mutators, M, BatchUpdate } from "./mutators";
-import jsonpatch, {Operation} from "fast-json-patch";
+import jsonpatch, { Operation } from "fast-json-patch";
 
-export function useReflectStore({
-  userId,
-  roomId,
-  server,
-}: {
-  userId: string;
-  roomId: string;
-  server: string;
-}) {
+export function useReflectStore({ userId, roomId, server }: { userId: string; roomId: string; server: string }) {
   const [storeWithStatus, setStoreWithStatus] = useState<TLStoreWithStatus>({
     status: "loading",
   });
@@ -114,7 +106,7 @@ export function useReflectStore({
         store.listen(
           function applyChangesToReflect({ changes }: TLStoreEventInfo) {
             const updatedPatches: Record<string, Operation[]> = {};
-            for (const id in changes.updated)  {
+            for (const id in changes.updated) {
               const [from, to] = changes.updated[id as TLRecord["id"]];
               updatedPatches[id] = jsonpatch.compare(from, to);
             }
@@ -173,13 +165,13 @@ export function useReflectStore({
 
       // Create the instance presence derivation and set initial value.
       const presenceDerivation = createPresenceStateDerivation(userPreferences, presenceId)(store);
-      const presenceInit = presenceDerivation.value;
-      if (presenceInit) reflect.mutate.createRecord(presenceDerivation.value);
+      const presence = presenceDerivation.get();
+      if (presence) reflect.mutate.createRecord(presence);
 
       // When the derivation change, sync presence to reflect.
       disposables.add(
         react("when presence changes", function syncPresenceToReflect() {
-          const presence = presenceDerivation.value;
+          const presence = presenceDerivation.get();
           requestAnimationFrame(() => {
             if (presence) reflect.mutate.createRecord(presence);
           });

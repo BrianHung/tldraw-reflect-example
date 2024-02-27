@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import {
+  Editor,
   Tldraw,
   createSessionStateSnapshotSignal,
   loadSessionStateSnapshotIntoStore,
@@ -25,7 +26,7 @@ function File() {
     server,
   });
 
-  const onMount = useCallback(function onMount(editor) {
+  const onMount = useCallback(function onMount(editor: Editor) {
     editor.user.updateUserPreferences({
       name,
     });
@@ -36,12 +37,12 @@ function File() {
     /**
      * Persist session state in localStorage.
      */
-    const sessionStateInit = JSON.parse(localStorage.getItem("TLDRAW_INSTANCE_STATE"));
-    if (sessionStateInit) loadSessionStateSnapshotIntoStore(store, sessionStateInit);
+    const session = JSON.parse(localStorage.getItem("TLDRAW_INSTANCE_STATE"));
+    if (session) loadSessionStateSnapshotIntoStore(store, session);
     const sessionStateSnapshot = createSessionStateSnapshotSignal(store);
     disposables.add(
       react("when session state changes", function syncSessionStateToLocalStorage() {
-        const session = sessionStateSnapshot.value;
+        const session = sessionStateSnapshot.get();
         requestAnimationFrame(() => {
           if (session) localStorage.setItem("TLDRAW_INSTANCE_STATE", JSON.stringify(session));
         });
