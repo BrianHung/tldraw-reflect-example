@@ -131,7 +131,12 @@ export function useReflectStore({ userId, roomId, server }: { userId: string; ro
           clientIds = clientIds.filter(id => id !== clientId);
           const instanceIds = clientIds.map(id => InstancePresenceRecordType.createId(id));
 
-          const prevInstanceIds = new Set(store.query.records("instance_presence").value.map(instance => instance.id));
+          const prevInstanceIds = new Set(
+            store.query
+              .records("instance_presence")
+              .get()
+              .map(instance => instance.id)
+          );
           const nextInstanceIds = new Set(instanceIds);
 
           const created = Array.from(nextInstanceIds).filter(id => !prevInstanceIds.has(id));
